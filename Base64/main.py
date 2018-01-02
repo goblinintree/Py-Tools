@@ -6,44 +6,83 @@
 from Tkinter import *
 import base64
 
+def decode_base64(data):
+            """Decode base64, padding being optional.
+            :param data: Base64 data as an ASCII byte string
+            :returns: The decoded byte string.
+            {'confidence': 0.0, 'language': None, 'encoding': None}
+            """
+            missing_padding = 4 - len(data) % 4
+            if missing_padding:
+                data += b'='* missing_padding
+            return base64.decodestring(data)
+
 class Application(Frame):
+
+
     def __init__(self, master=None):
         Frame.__init__(self, master)
         self.pack()
         self.createWidgets(master)
 
-    def do_decode(src_str):
+    def do_decode(self, src_str):
         if not isinstance(src_str, unicode):
             t = type(src_str)
             src_str = unicode(src_str, t)
-        return base64.b64decode(src_str)
+        print decode_base64(src_str)
+        return decode_base64(src_str)
 
-    def do_encode(src_str):
+    def do_encode(self, src_str):
         if not isinstance(src_str, unicode):
             t = type(src_str)
             src_str = unicode(src_str, t)
+        print base64.b64encode(src_str)
         return base64.b64encode(src_str)
 
+    def do_encode_action(self):
+        s_text= self.srcText
+        d_text = self.distText
+        s_text_str = s_text.get('1.0',END)
+        d_text_str=self.do_encode(s_text_str)
+        d_text.delete(1.0,END)
+        d_text.insert(1.0,d_text_str)
+        pass
+
+    def do_decode_action(self):
+        s_text= self.srcText
+        d_text = self.distText
+        s_text_str = s_text.get('1.0',END)
+        print s_text_str
+        d_text_str=self.do_decode(s_text_str)
+        d_text.delete(1.0,END)
+        d_text.insert(1.0,d_text_str)
+        pass
+
     def createWidgets(self,master=None):
+        # self.src_text = StringVar(value="None")
+        # self.dist_text = StringVar(value="None")
+
         self.frame_1 = Frame(master)
         self.baseSrcLabel = Label(self.frame_1, text=u'Base64源')
         self.baseSrcLabel.pack()
         self.srcText = Text(self.frame_1, height="10")
         self.srcText.pack()
+        self.srcText.insert(INSERT,"src")
         self.frame_1.pack(side=TOP)
 
         self.frame_2 = Frame(master)
-        self.decodeButton = Button(self.frame_2, text='解码')
+        self.decodeButton = Button(self.frame_2, text=u'解码', command = self.do_decode_action )
         self.decodeButton.pack(side=LEFT)
-        self.encodeButton = Button(self.frame_2, text='编码')
+        self.encodeButton = Button(self.frame_2, text=u'编码', command = self.do_encode_action )
         self.encodeButton.pack(side=LEFT)
         self.frame_2.pack(side=TOP)
 
         self.frame_3 = Frame(master)
         self.basedistLabel = Label(self.frame_3, text=u'Base64目标')
         self.basedistLabel.pack()
-        self.srcText = Text(self.frame_3, height="10")
-        self.srcText.pack()
+        self.distText = Text(self.frame_3, height="10")
+        self.distText.pack()
+        self.distText.insert(INSERT,"dist")
         self.frame_3.pack(side=TOP)
 
         self.frame_4 = Frame(master)
