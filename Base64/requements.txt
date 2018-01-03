@@ -2,3 +2,6 @@ Tk
 wxWidgets
 Qt
 GTK
+
+import base64
+import chardet
