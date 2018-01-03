@@ -5,6 +5,10 @@
 
 from Tkinter import *
 import base64
+import chardet
+
+import sys
+print sys.getdefaultencoding()
 
 def decode_base64(data):
             """Decode base64, padding being optional.
@@ -17,8 +21,19 @@ def decode_base64(data):
                 data += b'='* missing_padding
             return base64.decodestring(data)
 
-class Application(Frame):
+def check_code(s_text_str):
+    if isinstance(s_text_str, unicode):
+        print "check_code >> unicode"
+    else:
+        print "check_code >> ", chardet.detect(s_text_str)
+    pass
 
+def str_code_utf8(strings):
+
+    return strings
+
+
+class Application(Frame):
 
     def __init__(self, master=None):
         Frame.__init__(self, master)
@@ -26,23 +41,21 @@ class Application(Frame):
         self.createWidgets(master)
 
     def do_decode(self, src_str):
-        if not isinstance(src_str, unicode):
-            t = type(src_str)
-            src_str = unicode(src_str, t)
-        print decode_base64(src_str)
+        print "100000000001"
         return decode_base64(src_str)
 
     def do_encode(self, src_str):
-        if not isinstance(src_str, unicode):
-            t = type(src_str)
-            src_str = unicode(src_str, t)
-        print base64.b64encode(src_str)
+        print "200000000001"
         return base64.b64encode(src_str)
 
     def do_encode_action(self):
         s_text= self.srcText
         d_text = self.distText
         s_text_str = s_text.get('1.0',END)
+        print 1111, s_text_str
+        check_code(s_text_str)
+        s_text_str = s_text_str.encode("UTF-8")
+        check_code(s_text_str)
         d_text_str=self.do_encode(s_text_str)
         d_text.delete(1.0,END)
         d_text.insert(1.0,d_text_str)
@@ -52,7 +65,11 @@ class Application(Frame):
         s_text= self.srcText
         d_text = self.distText
         s_text_str = s_text.get('1.0',END)
-        print s_text_str
+        print 2222, s_text_str
+        check_code(s_text_str)
+        s_text_str = s_text_str.encode("UTF-8")
+        check_code(s_text_str)
+
         d_text_str=self.do_decode(s_text_str)
         d_text.delete(1.0,END)
         d_text.insert(1.0,d_text_str)
@@ -93,6 +110,6 @@ class Application(Frame):
 
 app = Application()
 # 窗口标题:
-app.master.title('Hello World')
+app.master.title(u'base64工具')
 # 主消息循环:
 app.mainloop()
